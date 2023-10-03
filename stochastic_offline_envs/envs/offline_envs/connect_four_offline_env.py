@@ -10,23 +10,52 @@ from pathlib import Path
 
 class ConnectFourOfflineEnv(BaseOfflineEnv):
 
-    def __init__(self, path=default_path('c4data_mdp.ds'), horizon=50,
+    def __init__(self, path=default_path('c4data_mdp_random.ds'), horizon=50,
                  n_interactions=int(1e6),
-                 exec_dir=default_path('../connect4')):
-        opp_policy = C4MarkovExploitable(exec_dir=exec_dir)
+                 exec_dir=default_path('../connect4'), 
+                 worst_case_adv=False,
+                 test_regen_prob=0.2,
+                 eps=0.01,
+                 data_name=None, 
+                 test_only=False):
+        if data_name:
+            path = default_path(f'{data_name}.ds') # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
+        if worst_case_adv:
+            test_opp_policy = C4Optimal(exec_dir=exec_dir)
+        else:
+            test_opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=test_regen_prob)
+
+        if data_name:
+            if "random" not in data_name: # e.g. "c4data_mdp_90"
+                if len(data_name) > 13:
+                    eps = eval(data_name[data_name.find('_') + 5:data_name.find('_') + 7]) / 100
+                regen_prob = eval(data_name[data_name.rfind('_') + 1:]) / 100
+                opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=regen_prob)
+            elif data_name == "c4data_mdp_random":
+                opp_policy = RandomPolicy(action_space = spaces.Discrete(7))
+            elif data_name == "c4data_mdp_random_random":
+                eps = 1
+                opp_policy = RandomPolicy(action_space = spaces.Discrete(7))
+        else:
+            raise Exception("Lack data name")
+
+        print("Opt of learner and adv:", 1 - eps, 1 - regen_prob)
+        print(path)
+
         env_cls = lambda: ConnectFourEnv(opp_policy)
+        self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy)
 
         def data_policy_fn():
-            raise AttributeError(
-                'Environment is attempting to regenerate data, which is not supported in this release. Double check the dataset path.')
-            # data_specialized_policy = C4Specialized()
-            # data_eps_greedy = self._eps_greedy_policy(
-            #     eps=0.01, exec_dir=exec_dir)
-            # data_policy = EpisodicMixturePolicy(policies=[data_specialized_policy, data_eps_greedy],
-            #                                     ps=[0.5, 0.5])
-            # return data_policy
+            # raise AttributeError(
+            #     'Environment is attempting to regenerate data, which is not supported in this release. Double check the dataset path.')
+            data_specialized_policy = C4Specialized()
+            data_eps_greedy = self._eps_greedy_policy(
+                eps=eps, exec_dir=exec_dir)
+            data_policy = EpisodicMixturePolicy(policies=[data_specialized_policy, data_eps_greedy],
+                                                ps=[0.5, 0.5])
+            return data_policy
 
-        super().__init__(path, env_cls, data_policy_fn, horizon, n_interactions)
+        super().__init__(path, env_cls, data_policy_fn, horizon, n_interactions, test_only)
 
     def _eps_greedy_policy(self, eps, exec_dir):
         optimal_policy = C4Optimal(exec_dir=exec_dir)

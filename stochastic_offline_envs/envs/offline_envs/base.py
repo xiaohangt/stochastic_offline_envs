@@ -5,12 +5,15 @@ import pickle
 
 class BaseOfflineEnv:
 
-    def __init__(self, p, env_cls, data_policy, horizon, n_interactions):
+    def __init__(self, p, env_cls, data_policy, horizon, n_interactions, test=False):
         self.env_cls = env_cls
         self.data_policy = data_policy
         self.horizon = horizon
         self.n_interactions = n_interactions
         self.p = p
+        if test:
+            return
+
         if self.p is not None and path.exists(self.p):
             print('Dataset file found. Loading existing trajectories.')
             with open(self.p, 'rb') as file:

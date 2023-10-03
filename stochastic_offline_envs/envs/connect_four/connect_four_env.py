@@ -11,6 +11,7 @@ class ConnectFourEnv(gym.Env):
 			                                high=1, 
 			                                shape=(2, self.board.width, self.board.height), dtype=np.int8)
 		self.action_space = spaces.Discrete(self.board.width)
+		self.adv_action_space = spaces.Discrete(self.board.width)
 		self.opponent_policy = opponent_policy
 		self.opp_policy_info = None
 
@@ -20,19 +21,20 @@ class ConnectFourEnv(gym.Env):
 		self.move_str = self.move_str + str(int(real_act + 1))
 		done, winner = self.board.is_done()
 		if done:
+			assert np.sum(self.board.get_grid()[0]) >= 4
 			reward = self._reward_from_winner(winner)
 			obs = {'grid': self.board.get_grid(),
 			       'move_str': self.move_str}
 			return obs, reward, done, {}
 		self.current_player = 1 - self.current_player
-		self.opponent_step()
+		adv_action = self.opponent_step()
 		done, winner = self.board.is_done()
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
 		if done:
 			reward = self._reward_from_winner(winner)
-			return obs, reward, done, {'opp_policy_info': self.opp_policy_info}
-		return obs, 0, done, {'opp_policy_info': self.opp_policy_info}
+			return obs, reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+		return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 
 	def opponent_step(self):
 		obs = {'grid': self.board.get_grid(),
@@ -41,6 +43,7 @@ class ConnectFourEnv(gym.Env):
 		real_act = self.board.place(action, self.current_player)
 		self.move_str = self.move_str + str(int(real_act + 1))
 		self.current_player = 1 - self.current_player
+		return action
 
 	def reset(self):
 		self.move_str = ''
