@@ -26,9 +26,12 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
             test_opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=test_regen_prob)
 
         if data_name:
-            if "random" not in data_name: # e.g. "c4data_mdp_90"
-                if len(data_name) > 13:
-                    eps = eval(data_name[data_name.find('_') + 5:data_name.find('_') + 7]) / 100
+            if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
+                if len(data_name) > 13: 
+                    # Get eps for decision maker
+                    start_ind = data_name.find('_') + 5
+                    end_ind = data_name[start_ind:].find('_')
+                    eps = eval(data_name[start_ind: start_ind + end_ind]) / 100
                 regen_prob = eval(data_name[data_name.rfind('_') + 1:]) / 100
                 opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=regen_prob)
             elif data_name == "c4data_mdp_random":
