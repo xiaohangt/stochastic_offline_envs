@@ -13,27 +13,27 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
     def __init__(self, path=default_path('c4data_mdp_random.ds'), horizon=50,
                  n_interactions=int(1e6),
                  exec_dir=default_path('../connect4'), 
-                 worst_case_adv=False,
                  test_regen_prob=0.2,
                  eps=0.01,
                  data_name=None, 
                  test_only=False):
         if data_name:
             path = default_path(f'{data_name}.ds') # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
-        if worst_case_adv:
-            test_opp_policy = C4Optimal(exec_dir=exec_dir)
+        if test_regen_prob > 0:
+            test_opp_policy = opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
         else:
-            test_opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=test_regen_prob)
+            test_opp_policy = C4Optimal(exec_dir=exec_dir)
 
         if data_name:
             if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
-                if len(data_name) > 13: 
+                if len(data_name) > 13:
                     # Get eps for decision maker
                     start_ind = data_name.find('_') + 5
                     end_ind = data_name[start_ind:].find('_')
                     eps = eval(data_name[start_ind: start_ind + end_ind]) / 100
                 regen_prob = eval(data_name[data_name.rfind('_') + 1:]) / 100
-                opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=regen_prob)
+                # New version: e-greedy adversary
+                opp_policy = self._eps_greedy_policy(eps=regen_prob, exec_dir=exec_dir)
             elif data_name == "c4data_mdp_random":
                 opp_policy = RandomPolicy(action_space = spaces.Discrete(7))
             elif data_name == "c4data_mdp_random_random":
