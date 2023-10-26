@@ -33,7 +33,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
                     end_ind = data_name[start_ind:].find('_')
                     eps = eval(data_name[start_ind: start_ind + end_ind]) / 100
                 regen_prob = eval(data_name[data_name.rfind('_') + 1:]) / 100
-                opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=regen_prob)
+                opp_policy = self._eps_greedy_policy(eps=regen_prob, exec_dir=exec_dir)
             elif data_name == "c4data_mdp_random":
                 opp_policy = RandomPolicy(action_space = spaces.Discrete(7))
             elif data_name == "c4data_mdp_random_random":
