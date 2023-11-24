@@ -23,7 +23,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         if worst_case_adv:
             test_opp_policy = C4Optimal(exec_dir=exec_dir)
         else:
-            test_opp_policy = C4MarkovExploitable(exec_dir=exec_dir, regen_prob=test_regen_prob)
+            test_opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
 
         if data_name:
             if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
