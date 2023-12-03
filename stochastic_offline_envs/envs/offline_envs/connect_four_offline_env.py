@@ -45,8 +45,8 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         print("Opt of learner and adv:", 1 - eps, 1 - regen_prob)
         print(path)
 
-        env_cls = lambda: ConnectFourEnv(opp_policy)
-        self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy)
+        env_cls = lambda: ConnectFourEnv(opp_policy, optimal_policy=C4Optimal(exec_dir=exec_dir))
+        self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy, optimal_policy=C4Optimal(exec_dir=exec_dir))
 
         def data_policy_fn():
             # raise AttributeError(
