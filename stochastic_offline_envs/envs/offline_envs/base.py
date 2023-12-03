@@ -39,12 +39,12 @@ class BaseOfflineEnv:
         return trajs
 
 
-def default_path(name):
+def default_path(name, data_dir="offline_data"):
     # Get the path of the current file
     file_path = path.dirname(path.realpath(__file__))
     # Go up 3 directories
     root_path = path.abspath(path.join(file_path, '..', '..', '..'))
     # Go to offline data directory
-    offline_data_path = path.join(root_path, 'offline_data')
+    offline_data_path = path.join(root_path, data_dir)
     # append the name of the dataset
     return path.join(offline_data_path, name)

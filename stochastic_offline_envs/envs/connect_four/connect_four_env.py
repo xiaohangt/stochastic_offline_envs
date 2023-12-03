@@ -2,10 +2,11 @@ import numpy as np
 import random
 import gym
 from gym import spaces
+from stochastic_offline_envs.policies.c4_optimal import C4Optimal
 
 class ConnectFourEnv(gym.Env):
 
-	def __init__(self, opponent_policy):
+	def __init__(self, opponent_policy, optimal_policy, new_reward=False):
 		self.board = ConnectFourBoard()
 		self.observation_space = spaces.Box(low=0, 
 			                                high=1, 
@@ -14,6 +15,8 @@ class ConnectFourEnv(gym.Env):
 		self.adv_action_space = spaces.Discrete(self.board.width)
 		self.opponent_policy = opponent_policy
 		self.opp_policy_info = None
+		self.new_reward = new_reward
+		self.optimal_policy = optimal_policy
 
 	def step(self, action):
 		# Should always be the acting player's turns
@@ -31,10 +34,20 @@ class ConnectFourEnv(gym.Env):
 		done, winner = self.board.is_done()
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
+		
 		if done:
 			reward = self._reward_from_winner(winner)
 			return obs, reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
-		return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+		
+		if self.new_reward:
+			im_reward = int(self.optimal_step(obs) == action)
+			return obs, im_reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+		else:
+			return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+	
+	def optimal_step(self, obs):
+		action, _ = self.optimal_policy.sample(obs, 0, self.t)
+		return action
 
 	def opponent_step(self):
 		obs = {'grid': self.board.get_grid(),

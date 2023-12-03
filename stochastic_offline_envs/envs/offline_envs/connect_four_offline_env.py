@@ -16,13 +16,18 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
                  test_regen_prob=0.2,
                  eps=0.01,
                  data_name=None, 
-                 test_only=False):
+                 test_only=False,
+                 data_dir="offline_data",
+                 new_reward=False):
+
+        self.optimal_policy = C4Optimal(exec_dir=exec_dir)
+    
         if data_name:
-            path = default_path(f'{data_name}.ds') # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
+            path = default_path(f'{data_name}.ds', data_dir) # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
         if test_regen_prob > 0:
-            test_opp_policy = opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
+            test_opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
         else:
-            test_opp_policy = C4Optimal(exec_dir=exec_dir)
+            test_opp_policy = self.optimal_policy
 
         if data_name:
             if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
@@ -45,8 +50,8 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         print("Opt of learner and adv:", 1 - eps, 1 - regen_prob)
         print(path)
 
-        env_cls = lambda: ConnectFourEnv(opp_policy)
-        self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy)
+        env_cls = lambda: ConnectFourEnv(opp_policy, self.optimal_policy, new_reward=new_reward)
+        self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy, self.optimal_policy, new_reward=new_reward)
 
         def data_policy_fn():
             # raise AttributeError(
@@ -61,11 +66,10 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         super().__init__(path, env_cls, data_policy_fn, horizon, n_interactions, test_only)
 
     def _eps_greedy_policy(self, eps, exec_dir):
-        optimal_policy = C4Optimal(exec_dir=exec_dir)
         action_space = spaces.Discrete(7)
         random_policy = RandomPolicy(action_space)
 
-        eps_greedy_policy = StateMixturePolicy(policies=[optimal_policy, random_policy],
+        eps_greedy_policy = StateMixturePolicy(policies=[self.optimal_policy, random_policy],
                                                ps=[1 - eps, eps])
 
         return eps_greedy_policy
