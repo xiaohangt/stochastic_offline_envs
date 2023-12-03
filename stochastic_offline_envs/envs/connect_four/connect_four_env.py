@@ -5,7 +5,7 @@ from gym import spaces
 
 class ConnectFourEnv(gym.Env):
 
-	def __init__(self, opponent_policy):
+	def __init__(self, opponent_policy, optimal_policy=None):
 		self.board = ConnectFourBoard()
 		self.observation_space = spaces.Box(low=0, 
 			                                high=1, 
@@ -14,6 +14,7 @@ class ConnectFourEnv(gym.Env):
 		self.adv_action_space = spaces.Discrete(self.board.width)
 		self.opponent_policy = opponent_policy
 		self.opp_policy_info = None
+		self.optimal_policy = optimal_policy
 
 	def step(self, action):
 		# Should always be the acting player's turns
@@ -36,6 +37,10 @@ class ConnectFourEnv(gym.Env):
 			return obs, reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 		return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 
+	def optimal_action(self, obs):
+		action, _ = self.optimal_policy.sample(obs, 0, self.t)
+		return action
+	
 	def opponent_step(self):
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
