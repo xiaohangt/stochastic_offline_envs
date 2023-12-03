@@ -37,7 +37,7 @@ class ConnectFourEnv(gym.Env):
 			return obs, reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 		return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 
-	def optimal_action(self, obs):
+	def optimal_step(self, obs):
 		action, _ = self.optimal_policy.sample(obs, 0, self.t)
 		return action
 	
