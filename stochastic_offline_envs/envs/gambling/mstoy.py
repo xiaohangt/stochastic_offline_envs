@@ -28,19 +28,14 @@ class MSToyEnv(gym.Env):
         adv_action = np.random.choice(2, 1)[0]
 
         if self.state == 0:
-            if adv_action == 0:  
-                self.state = 1
-            elif adv_action == 1:
-                self.state = 2
+            self.state = 1 if adv_action == 0 else 2
             self.state += np.clip(action, 0, 1) * 2
-
             if self.state in [3, 4]:
                 reward = self.reward_list[-2 + adv_action]
                 done = True
-        
         elif self.state in [1, 2]: # 1-> 5, 6, 7; 2-> 8, 9, 10
             self.state = (3 * self.state + 2 + action)
-            # state=5-10
             reward = self.reward_list[self.state - 5]
             done = True
+
         return self.get_obs(), reward, done, {"adv": adv_action}
