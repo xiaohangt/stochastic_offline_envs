@@ -5,8 +5,7 @@ from stochastic_offline_envs.policies.random import RandomPolicy
 
 class GamblingOfflineEnv(BaseOfflineEnv):
 
-    def __init__(self, path=default_path('gambling.ds'), horizon=5,
-                 n_interactions=int(1e5)):
+    def __init__(self, path=default_path('gambling.ds'), horizon=5, n_interactions=int(1e5)):
         env_cls = lambda: GamblingEnv()
 
         def data_policy_fn():

@@ -10,9 +10,11 @@ from pathlib import Path
 
 class ConnectFourOfflineEnv(BaseOfflineEnv):
 
-    def __init__(self, path=default_path('c4data_mdp_random.ds'), horizon=50,
+    def __init__(self, 
+                 path=default_path('c4data_mdp_random.ds'), 
+                 horizon=50,
                  n_interactions=int(1e6),
-                 exec_dir=default_path('../connect4'), 
+                 exec_dir=default_path('connect4', False), 
                  worst_case_adv=False,
                  test_regen_prob=0.0,
                  eps=0.01,
@@ -20,8 +22,10 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
                  test_only=False):
         if data_name:
             path = default_path(f'{data_name}.ds') # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
+
         if worst_case_adv:
             test_opp_policy = C4Optimal(exec_dir=exec_dir)
+            test_regen_prob = 0.0
         else:
             test_opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
 
@@ -29,7 +33,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
             if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
                 if len(data_name) > 13: 
                     # Get eps for decision maker
-                    start_ind = data_name.find('_') + 5
+                    start_ind = data_name.find('mdp_') + 4
                     end_ind = data_name[start_ind:].find('_')
                     eps = eval(data_name[start_ind: start_ind + end_ind]) / 100
                 regen_prob = eval(data_name[data_name.rfind('_') + 1:]) / 100
@@ -42,15 +46,13 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         else:
             raise Exception("Lack data name")
 
-        print("Opt of learner and adv:", 1 - eps, 1 - regen_prob)
-        print(path)
+        print("Opt of learner and adv in training:", 1 - eps, 1 - regen_prob)
+        print("Opt of adv in testing:", 1 - eps, 1 - test_regen_prob)
 
         env_cls = lambda: ConnectFourEnv(opp_policy, optimal_policy=C4Optimal(exec_dir=exec_dir))
         self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy, optimal_policy=C4Optimal(exec_dir=exec_dir))
 
         def data_policy_fn():
-            # raise AttributeError(
-            #     'Environment is attempting to regenerate data, which is not supported in this release. Double check the dataset path.')
             data_specialized_policy = C4Specialized()
             data_eps_greedy = self._eps_greedy_policy(
                 eps=eps, exec_dir=exec_dir)

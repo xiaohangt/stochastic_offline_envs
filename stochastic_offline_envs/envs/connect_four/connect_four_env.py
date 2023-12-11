@@ -26,7 +26,7 @@ class ConnectFourEnv(gym.Env):
 			reward = self._reward_from_winner(winner)
 			obs = {'grid': self.board.get_grid(),
 			       'move_str': self.move_str}
-			return obs, reward, done, {}
+			return obs, reward, done, False, {}
 		self.current_player = 1 - self.current_player
 		adv_action = self.opponent_step()
 		done, winner = self.board.is_done()
@@ -34,8 +34,8 @@ class ConnectFourEnv(gym.Env):
 			   'move_str': self.move_str}
 		if done:
 			reward = self._reward_from_winner(winner)
-			return obs, reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
-		return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+			return obs, reward, done, False, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+		return obs, 0, done, False, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 
 	def optimal_step(self, obs):
 		action, _ = self.optimal_policy.sample(obs, 0, self.t)
@@ -50,19 +50,18 @@ class ConnectFourEnv(gym.Env):
 		self.current_player = 1 - self.current_player
 		return action
 
-	def reset(self):
+	def reset(self, **kwargs):
 		self.move_str = ''
 		self.board = ConnectFourBoard()
 		self.current_player = 0
 		self.opponent_player = 1
-		# self.opponent_player = np.random.randint(2)
 		self.t = 0
 		self.opponent_policy.reset()
 		if self.current_player == self.opponent_player:
 			self.opponent_step()
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
-		return obs
+		return obs, None
 
 	def render(self):
 		print("=" * 20)
@@ -81,6 +80,7 @@ class ConnectFourEnv(gym.Env):
 		elif winner == 1 - self.current_player:
 			return -1
 		return 0
+
 
 class ConnectFourBoard:
 
@@ -136,7 +136,7 @@ class ConnectFourBoard:
 		return target_env.board.board[col][y] == color
 
 	def is_done(self):
-		# perhaps not as efficient as possible :)
+		# perhaps not as efficient as possible
 		grid = self.get_grid()
 		if np.sum(grid) == self.width * self.height:
 			return True, 2
@@ -179,6 +179,7 @@ class ConnectFourBoard:
 					if all(pieces):
 						return True, player
 		return False, None
+
 
 class GridWrapper(gym.ObservationWrapper):
     def __init__(self, env):

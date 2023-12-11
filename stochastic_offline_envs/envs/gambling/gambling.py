@@ -7,8 +7,10 @@ class GamblingEnv(gym.Env):
 
     def __init__(self):
         self.action_space = spaces.Discrete(3)
+        self.adv_action_space = spaces.Discrete(2)
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(7,), dtype=np.uint8)
+            low=0, high=1, shape=(7,), dtype=np.uint8
+        )
         self.state = 0
 
     def get_obs(self):
@@ -18,24 +20,24 @@ class GamblingEnv(gym.Env):
 
     def reset(self):
         self.state = 0
-        return self.get_obs()
+        return self.get_obs(), None
 
     def step(self, action):
         if self.state == 0:
             reward = 0
             done = False
             if action == 0:
-                if np.random.random_sample() < 0.5:  # -2.5
+                if np.random.random_sample() < 0.5:
                     self.state = 1
                 else:
                     self.state = 2
             elif action == 1:
-                if np.random.random_sample() < 0.5:  # (-10 + 1)/2
+                if np.random.random_sample() < 0.5:
                     self.state = 3
                 else:
                     self.state = 4
             else:
-                if np.random.random_sample() < 0.5:  # 1
+                if np.random.random_sample() < 0.5:
                     self.state = 5
                 else:
                     self.state = 6
@@ -57,4 +59,4 @@ class GamblingEnv(gym.Env):
         elif self.state == 6:
             reward = 1
             done = True
-        return self.get_obs(), reward, done, {}
+        return self.get_obs(), reward, done, False, {}
