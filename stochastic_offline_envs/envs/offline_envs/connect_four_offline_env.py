@@ -29,7 +29,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
             if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
                 if len(data_name) > 13: 
                     # Get eps for decision maker
-                    start_ind = data_name.find('_') + 5
+                    start_ind = data_name.find('mdp_') + 4
                     end_ind = data_name[start_ind:].find('_')
                     eps = eval(data_name[start_ind: start_ind + end_ind]) / 100
                 regen_prob = eval(data_name[data_name.rfind('_') + 1:]) / 100
