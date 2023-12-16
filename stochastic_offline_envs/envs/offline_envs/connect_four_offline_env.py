@@ -21,13 +21,15 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
                  new_reward=False):
 
         self.optimal_policy = C4Optimal(exec_dir=exec_dir)
+        self.exec_dir = exec_dir
+        self.new_reward = new_reward
     
         if data_name:
             path = default_path(f'{data_name}.ds', data_dir) # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
         if test_regen_prob > 0:
-            test_opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
+            self.test_opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
         else:
-            test_opp_policy = self.optimal_policy
+            self.test_opp_policy = self.optimal_policy
 
         if data_name:
             if "random" not in data_name: # e.g. "c4data_mdp_90", "c4data_mdp_17_mdp_17"
@@ -51,7 +53,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         print(path)
 
         env_cls = lambda: ConnectFourEnv(opp_policy, self.optimal_policy, new_reward=new_reward)
-        self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy, self.optimal_policy, new_reward=new_reward)
+        self.test_env_cls = lambda: ConnectFourEnv(self.test_opp_policy, self.optimal_policy, new_reward=new_reward)
 
         def data_policy_fn():
             # raise AttributeError(
@@ -64,6 +66,9 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
             return data_policy
 
         super().__init__(path, env_cls, data_policy_fn, horizon, n_interactions, test_only)
+
+    def create_env(self):
+        return ConnectFourEnv(self.test_opp_policy, self.optimal_policy, new_reward=self.new_reward)
 
     def _eps_greedy_policy(self, eps, exec_dir):
         action_space = spaces.Discrete(7)

@@ -39,7 +39,7 @@ class BaseOfflineEnv:
         return trajs
 
 
-def default_path(name, data_dir="offline_data"):
+def default_path(name, data_dir="sparserew_offline_data"):
     # Get the path of the current file
     file_path = path.dirname(path.realpath(__file__))
     # Go up 3 directories

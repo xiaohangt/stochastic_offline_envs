@@ -1,6 +1,6 @@
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 
 class MSToyEnv(gym.Env):
@@ -11,7 +11,7 @@ class MSToyEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=0, high=1, shape=(11,), dtype=np.uint8)
         self.state = 0
-        self.reward_list = [0, 5, 5, 6, 1, 2, 10, 4]
+        self.reward_list = [0, 5, 5, 6, 1, 2, 7, 4]
 
     def get_obs(self):
         obs = np.zeros(self.observation_space.shape[0])
