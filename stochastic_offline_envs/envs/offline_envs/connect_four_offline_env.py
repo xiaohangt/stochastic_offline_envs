@@ -14,7 +14,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
                  n_interactions=int(1e6),
                  exec_dir=default_path('../connect4'), 
                  worst_case_adv=False,
-                 test_regen_prob=0.2,
+                 test_regen_prob=0.0,
                  eps=0.01,
                  data_name=None, 
                  test_only=False):
