@@ -47,7 +47,7 @@ class MSToyEnv(gym.Env):
                     done = True
                 elif adv_action == 1:
                     self.state = 6
-                    reward = 0.0
+                    reward = 0.5
                     done = True
             elif action == 1:
                 if adv_action == 0:
