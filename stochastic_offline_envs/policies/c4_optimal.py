@@ -1,5 +1,6 @@
 from stochastic_offline_envs.policies.base import BasePolicy, PolicyStep
 from collections import namedtuple
+import os
 # from subprocess import Popen, PIPE, STDOUT
 import pexpect
 import os
