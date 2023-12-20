@@ -13,7 +13,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
     def __init__(self, path=default_path('c4data_mdp_random.ds'), horizon=50,
                  n_interactions=int(1e6),
                  exec_dir=default_path('../connect4'), 
-                 test_regen_prob=0.2,
+                 test_regen_prob=0.0,
                  eps=0.01,
                  data_name=None, 
                  test_only=False,
@@ -23,6 +23,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         self.optimal_policy = C4Optimal(exec_dir=exec_dir)
         self.exec_dir = exec_dir
         self.new_reward = new_reward
+        breakpoint()
     
         if data_name:
             path = default_path(f'{data_name}.ds', data_dir) # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
@@ -67,7 +68,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
 
         super().__init__(path, env_cls, data_policy_fn, horizon, n_interactions, test_only)
 
-    def create_env(self):
+    def create_test_env(self):
         return ConnectFourEnv(self.test_opp_policy, self.optimal_policy, new_reward=self.new_reward)
 
     def _eps_greedy_policy(self, eps, exec_dir):
