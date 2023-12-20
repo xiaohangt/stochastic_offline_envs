@@ -23,7 +23,6 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         self.optimal_policy = C4Optimal(exec_dir=exec_dir)
         self.exec_dir = exec_dir
         self.new_reward = new_reward
-        breakpoint()
     
         if data_name:
             path = default_path(f'{data_name}.ds', data_dir) # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
