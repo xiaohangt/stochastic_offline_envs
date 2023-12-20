@@ -1,13 +1,16 @@
 from stochastic_offline_envs.envs.offline_envs.base import BaseOfflineEnv, default_path
 from stochastic_offline_envs.envs.gambling.mstoy import MSToyEnv
+from stochastic_offline_envs.envs.gambling.new_mstoy import NewMSToyEnv
 from stochastic_offline_envs.policies.random import RandomPolicy
 
 
 class MSToyOfflineEnv(BaseOfflineEnv):
 
-    def __init__(self, path=default_path('mstoy.ds'), horizon=8,
-                 n_interactions=int(1e5)):
-        env_cls = lambda: MSToyEnv()
+    def __init__(self, horizon=8,
+                 n_interactions=int(1e5), new=False, data_name='mstoy.ds'):
+        self.test_env_cls = env_cls = MSToyEnv if not new else NewMSToyEnv
+        
+        path = default_path(f'{data_name}.ds')
 
         def data_policy_fn():
             test_env = env_cls()

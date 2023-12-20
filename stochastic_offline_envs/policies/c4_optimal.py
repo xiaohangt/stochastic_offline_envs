@@ -2,7 +2,8 @@ from stochastic_offline_envs.policies.base import BasePolicy, PolicyStep
 from collections import namedtuple
 # from subprocess import Popen, PIPE, STDOUT
 import pexpect
-
+import os
+import sys
 PolicyInfo = namedtuple("PolicyInfo", ["score"])
 
 
@@ -13,7 +14,8 @@ class C4Optimal(BasePolicy):
         self._exec_dir = exec_dir
         self.actions = range(7)
         self.c = pexpect.spawn('bash')
-        self.c.sendline(f'cd {self._exec_dir};./c4solver -a')
+        #sys.path.insert(1, '/home/ucakxta/stochastic_offline_envs/stochastic_offline_envs')
+        self.c.sendline(f'cd /home/ucakxta/stochastic_offline_envs/connect4;./c4solver -a')
         self.c.expect('done\r\n')
 
     def reset(self):
