@@ -1,10 +1,10 @@
 from stochastic_offline_envs.envs.offline_envs.base import BaseOfflineEnv, default_path
 import gym_2048
-import gym
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 import numpy as np
 from collections import namedtuple
-from gym.wrappers.time_limit import TimeLimit
+from gymnasium.wrappers.time_limit import TimeLimit
 
 wandb_run = 'keirp/stoch_rvs/2xz559rf'
 
