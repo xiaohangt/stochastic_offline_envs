@@ -1,7 +1,7 @@
 import numpy as np
 import random
-import gym
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 
 class ConnectFourEnv(gym.Env):
 

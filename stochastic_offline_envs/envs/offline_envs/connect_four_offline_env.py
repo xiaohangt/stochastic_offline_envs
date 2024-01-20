@@ -4,7 +4,7 @@ from stochastic_offline_envs.policies.random import RandomPolicy
 from stochastic_offline_envs.policies.mixture_policy import EpisodicMixturePolicy, StateMixturePolicy
 from stochastic_offline_envs.policies.c4_optimal import C4Optimal
 from stochastic_offline_envs.policies.c4_exploitable import C4Specialized, C4MarkovExploitable
-from gym import spaces
+from gymnasium import spaces
 from pathlib import Path
 
 

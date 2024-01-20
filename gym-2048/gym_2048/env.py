@@ -1,7 +1,7 @@
 import numpy as np
-import gym
-import gym.spaces as spaces
-from gym.utils import seeding
+import gymnasium as gym
+from gymnasium import spaces
+from gymnasium.utils import seeding
 
 
 class Base2048Env(gym.Env):

@@ -57,8 +57,8 @@ OpenAI ``gym.Env``.
 
 .. code:: python
 
-    import gym_2048
-    import gym
+    import gymnasium as gym_2048
+    import gymnasium as gym
 
 
     if __name__ == '__main__':
@@ -82,5 +82,5 @@ OpenAI ``gym.Env``.
       print('\nTotal Moves: {}'.format(moves))
 
 
-**NOTE**: Top level ``import gym_2048`` is needed to ensure registration with
+**NOTE**: Top level ``import gymnasium as gym_2048`` is needed to ensure registration with
 ``Gym``.
