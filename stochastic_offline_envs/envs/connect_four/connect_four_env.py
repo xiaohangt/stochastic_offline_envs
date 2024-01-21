@@ -34,8 +34,8 @@ class ConnectFourEnv(gym.Env):
 			   'move_str': self.move_str}
 		if done:
 			reward = self._reward_from_winner(winner)
-			return obs, reward, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
-		return obs, 0, done, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+			return obs, reward, done, False, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
+		return obs, 0, done, False, {'opp_policy_info': self.opp_policy_info, "adv_action": adv_action}
 
 	def optimal_step(self, obs):
 		action, _ = self.optimal_policy.sample(obs, 0, self.t)
@@ -50,7 +50,7 @@ class ConnectFourEnv(gym.Env):
 		self.current_player = 1 - self.current_player
 		return action
 
-	def reset(self):
+	def reset(self, **kwargs):
 		self.move_str = ''
 		self.board = ConnectFourBoard()
 		self.current_player = 0
@@ -62,7 +62,7 @@ class ConnectFourEnv(gym.Env):
 			self.opponent_step()
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
-		return obs
+		return obs, None
 
 	def render(self):
 		print("=" * 20)
