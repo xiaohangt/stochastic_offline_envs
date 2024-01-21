@@ -26,7 +26,7 @@ class ConnectFourEnv(gym.Env):
 			reward = self._reward_from_winner(winner)
 			obs = {'grid': self.board.get_grid(),
 			       'move_str': self.move_str}
-			return obs, reward, done, {}
+			return obs, reward, done, False, {}
 		self.current_player = 1 - self.current_player
 		adv_action = self.opponent_step()
 		done, winner = self.board.is_done()
@@ -62,7 +62,7 @@ class ConnectFourEnv(gym.Env):
 			self.opponent_step()
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
-		return obs, {}
+		return obs, None
 
 	def render(self):
 		print("=" * 20)
