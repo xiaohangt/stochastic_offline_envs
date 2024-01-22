@@ -20,7 +20,7 @@ class MSToyEnv(gym.Env):
 
     def reset(self):
         self.state = 0
-        return self.get_obs()
+        return self.get_obs(), None
 
     def step(self, action):
         reward = 0
@@ -38,4 +38,4 @@ class MSToyEnv(gym.Env):
             reward = self.reward_list[self.state - 5]
             done = True
 
-        return self.get_obs(), reward, done, {"adv": adv_action}
+        return self.get_obs(), reward, done, False, {"adv": adv_action}

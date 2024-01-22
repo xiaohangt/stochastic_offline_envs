@@ -18,7 +18,7 @@ class ToyEnv(gym.Env):
 
     def reset(self):
         self.state = 0
-        return self.get_obs()
+        return self.get_obs(), None
 
     def step(self, action):
         if self.state == 0:
@@ -52,4 +52,4 @@ class ToyEnv(gym.Env):
         elif self.state == 6:
             reward = 2
             done = True
-        return self.get_obs(), reward, done, {}
+        return self.get_obs(), reward, done, False, {}
