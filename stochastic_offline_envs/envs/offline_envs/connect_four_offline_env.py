@@ -22,6 +22,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
             path = default_path(f'{data_name}.ds') # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
         if worst_case_adv:
             test_opp_policy = C4Optimal(exec_dir=exec_dir)
+            test_regen_prob = 0.0
         else:
             test_opp_policy = self._eps_greedy_policy(eps=test_regen_prob, exec_dir=exec_dir)
 
@@ -42,8 +43,8 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
         else:
             raise Exception("Lack data name")
 
-        print("Opt of learner and adv:", 1 - eps, 1 - regen_prob)
-        print(path)
+        print("Opt of learner and adv in training:", 1 - eps, 1 - regen_prob)
+        print("Opt of adv in testing:", 1 - eps, 1 - test_regen_prob)
 
         env_cls = lambda: ConnectFourEnv(opp_policy, optimal_policy=C4Optimal(exec_dir=exec_dir))
         self.test_env_cls = lambda: ConnectFourEnv(test_opp_policy, optimal_policy=C4Optimal(exec_dir=exec_dir))
