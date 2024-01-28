@@ -1,4 +1,7 @@
 *.ds
+offline_data
+*.tar
+sparserew_offline_data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

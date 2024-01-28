@@ -1,12 +1,13 @@
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 
 class GamblingEnv(gym.Env):
 
     def __init__(self):
         self.action_space = spaces.Discrete(3)
+        self.adv_action_space = spaces.Discrete(2)
         self.observation_space = spaces.Box(
             low=0, high=1, shape=(7,), dtype=np.uint8)
         self.state = 0
@@ -39,22 +40,25 @@ class GamblingEnv(gym.Env):
                     self.state = 5
                 else:
                     self.state = 6
-        elif self.state == 1:
-            reward = 5
-            done = True
-        elif self.state == 2:
-            reward = -15
-            done = True
-        elif self.state == 3:
-            reward = 1
-            done = True
-        elif self.state == 4:
-            reward = -6
-            done = True
-        elif self.state == 5:
-            reward = 1
-            done = True
-        elif self.state == 6:
-            reward = 1
-            done = True
-        return self.get_obs(), reward, done, {}
+
+            if self.state == 1:
+                reward = 5
+                done = True
+            elif self.state == 2:
+                reward = -15
+                done = True
+            elif self.state == 3:
+                reward = 1
+                done = True
+            elif self.state == 4:
+                reward = -6
+                done = True
+            elif self.state == 5:
+                reward = 1
+                done = True
+            elif self.state == 6:
+                reward = 1
+                done = True
+        
+        adv_acts_ind = (self.state - 1) % 2
+        return self.get_obs(), reward, done, {'adv_action': adv_acts_ind}

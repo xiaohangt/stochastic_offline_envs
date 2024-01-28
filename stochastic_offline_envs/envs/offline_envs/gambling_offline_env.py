@@ -7,7 +7,7 @@ class GamblingOfflineEnv(BaseOfflineEnv):
 
     def __init__(self, path=default_path('gambling.ds'), horizon=5,
                  n_interactions=int(1e5)):
-        env_cls = lambda: GamblingEnv()
+        env_cls = self.test_env_cls = lambda: GamblingEnv()
 
         def data_policy_fn():
             test_env = env_cls()

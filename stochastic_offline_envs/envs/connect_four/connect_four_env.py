@@ -50,6 +50,10 @@ class ConnectFourEnv(gym.Env):
 		action, _ = self.optimal_policy.sample(obs, 0, self.t)
 		return action
 
+	def optimal_step(self, obs):
+		action, _ = self.optimal_policy.sample(obs, 0, self.t)
+		return action
+	
 	def opponent_step(self):
 		obs = {'grid': self.board.get_grid(),
 			   'move_str': self.move_str}
