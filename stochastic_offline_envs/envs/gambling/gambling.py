@@ -1,12 +1,13 @@
-import gymnasium as gym
+import gym
 import numpy as np
-from gymnasium import spaces
+from gym import spaces
 
 
 class GamblingEnv(gym.Env):
 
     def __init__(self):
         self.action_space = spaces.Discrete(3)
+        self.adv_action_space = spaces.Discrete(2)
         self.observation_space = spaces.Box(
             low=0, high=1, shape=(7,), dtype=np.uint8)
         self.state = 0
@@ -18,7 +19,7 @@ class GamblingEnv(gym.Env):
 
     def reset(self):
         self.state = 0
-        return self.get_obs()
+        return self.get_obs(), None
 
     def step(self, action):
         if self.state == 0:
@@ -57,4 +58,4 @@ class GamblingEnv(gym.Env):
         elif self.state == 6:
             reward = 1
             done = True
-        return self.get_obs(), reward, done, {}
+        return self.get_obs(), reward, done, False, {}

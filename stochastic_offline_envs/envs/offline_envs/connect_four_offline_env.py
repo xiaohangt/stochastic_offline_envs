@@ -4,15 +4,17 @@ from stochastic_offline_envs.policies.random import RandomPolicy
 from stochastic_offline_envs.policies.mixture_policy import EpisodicMixturePolicy, StateMixturePolicy
 from stochastic_offline_envs.policies.c4_optimal import C4Optimal
 from stochastic_offline_envs.policies.c4_exploitable import C4Specialized, C4MarkovExploitable
-from gymnasium import spaces
+from gym import spaces
 from pathlib import Path
 
 
 class ConnectFourOfflineEnv(BaseOfflineEnv):
 
-    def __init__(self, path=default_path('c4data_mdp_random.ds'), horizon=50,
+    def __init__(self, 
+                 path=default_path('c4data_mdp_random.ds'), 
+                 horizon=50,
                  n_interactions=int(1e6),
-                 exec_dir=default_path('../connect4'), 
+                 exec_dir=default_path('connect4', False), 
                  worst_case_adv=False,
                  test_regen_prob=0.0,
                  eps=0.01,
@@ -20,6 +22,7 @@ class ConnectFourOfflineEnv(BaseOfflineEnv):
                  test_only=False):
         if data_name:
             path = default_path(f'{data_name}.ds') # c4data_mdp_random, c4data_mdp_random_random, c4data_mdp_20
+
         if worst_case_adv:
             test_opp_policy = C4Optimal(exec_dir=exec_dir)
             test_regen_prob = 0.0

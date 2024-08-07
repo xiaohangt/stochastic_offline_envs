@@ -1,6 +1,6 @@
-import gymnasium as gym
+import gym
 import numpy as np
-from gymnasium import spaces
+from gym import spaces
 
 
 class MSToyEnv(gym.Env):

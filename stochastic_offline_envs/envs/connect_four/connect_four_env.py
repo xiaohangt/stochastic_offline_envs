@@ -1,7 +1,7 @@
 import numpy as np
 import random
-import gymnasium as gym
-from gymnasium import spaces
+import gym
+from gym import spaces
 
 class ConnectFourEnv(gym.Env):
 
@@ -82,6 +82,7 @@ class ConnectFourEnv(gym.Env):
 			return -1
 		return 0
 
+
 class ConnectFourBoard:
 
 	def __init__(self):
@@ -136,7 +137,7 @@ class ConnectFourBoard:
 		return target_env.board.board[col][y] == color
 
 	def is_done(self):
-		# perhaps not as efficient as possible :)
+		# perhaps not as efficient as possible
 		grid = self.get_grid()
 		if np.sum(grid) == self.width * self.height:
 			return True, 2

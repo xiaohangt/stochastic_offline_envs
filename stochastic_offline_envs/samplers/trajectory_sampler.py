@@ -5,7 +5,8 @@ from tqdm.autonotebook import tqdm
 from copy import deepcopy
 
 Trajectory = namedtuple(
-    "Trajectory", ["obs", "actions", "rewards", "infos", "policy_infos"])
+    "Trajectory", ["obs", "actions", "rewards", "infos", "policy_infos"]
+)
 
 
 class TrajectorySampler(BaseSampler):
